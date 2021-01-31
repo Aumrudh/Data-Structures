@@ -1,0 +1,414 @@
+Script started on Monday 22 July 2019 10:27:01 AM IST
+[?1034h[18bit034@mepcolinux ex3]$cat stack.h 
+//Programmed by AUMRUDH LAL KUMAR TJ
+//Balancing Paranthesis
+#include<stdio.h>
+#include<stdlib.h>
+typedef struct stack_node
+{
+   char data;
+   struct stack_node *next;
+}node;
+typedef node *stack;
+void push(char,stack);
+int pop(stack);
+int ISEmpty(stack);
+void display(stack);
+void bp(char[],stack);
+stack initialize();
+int top(stack);
+[18bit034@mepcolinux ex3]$cat imp.c
+#include"stack.h"
+stack initialize()
+{
+    stack temp;
+    temp=(node*)malloc(sizeof(node));
+    if(temp==NULL)
+     {
+      printf("Memory Not Allocated\n");
+      exit(0);
+     }
+    temp->next=NULL;
+    return temp;
+}
+void push(char p,stack s)
+{
+  static int x=1;
+  stack temp;
+  int h;
+  temp=(node*)malloc(sizeof(node));
+  if(temp==NULL)
+   {
+    printf("Memory Not allocate\n");
+    exit(0);
+   }
+     temp->data=p;
+     temp->next=s->next;
+     s->next=temp;
+     h=top(s);
+     printf("Top Element is : %c\n",h);
+}
+int pop(stack s)
+{
+  int a;
+  if(s->next==NULL)
+   {
+    return -1;
+   }
+  else
+  {
+   stack temp;
+   temp=s->next;
+   s->next=s->next->next;
+   a=temp->data;
+   free(temp);
+   return a;
+  }
+}
+int top(stack header)
+{
+        stack t;
+        t=header->next;
+        return(t->data);
+}
+int ISEmpty(stack s)
+{
+   if(s->next==NULL)
+   {
+    return 1;
+   }
+   else
+   {
+     return 99;
+   }
+}
+void display(stack s)
+{
+    stack temp;
+    temp=s->next;
+    if(temp==NULL)
+     {
+       printf("Stack Underflow\n");
+       exit(0);
+     }
+    while(temp!=NULL)
+     {
+       printf("%c\t",temp->data);
+       temp=temp->next;
+     }
+}
+void bp(char s[],stack s1)
+{
+   char k,c;
+   int i,flag=0,f=0;
+   for(i=0;s[i]!='\0';i++)
+    {
+      if(s[i]=='{'||s[i]=='['||s[i]=='(')
+        {
+          push(s[i],s1);
+        }
+      if(s[i]=='}'||s[i]==']'||s[i]==')')
+       {
+        c=pop(s1);
+        if(s[i]=='}'&&c=='{')
+          {
+            continue;
+          }
+        else if(s[i]==')'&&c=='(')
+          {
+            continue;
+          }
+        else if(s[i]==']'&&c=='[')
+          {
+            continue;
+          }
+        else
+         {
+          break;
+         }
+       }
+    }
+   f=ISEmpty(s1);
+ if(f==1)
+   {
+     printf("Correct Sequence\n");
+   }
+   else
+   {
+     printf("Unbalanced\n");
+   }
+}
+[18bit034@mepcolinux ex3]$cat app.c
+#include"stack.h" 
+main()
+{
+    int ch;
+    char t[10],temp,key;
+    stack s,s1;
+    s=initialize();
+    s1=initialize();
+    while(1)
+    {
+        printf("1-PUSH\n2-POP\n3-DISPLAY\n4-Balancing_Paranthesis\n");
+        printf("Enter the choice number\n");
+        scanf(" %d",&ch);
+        switch(ch)
+        {
+        case 1:
+
+           printf("Enter the element to be pushed : ");
+           scanf(" %c",&key);
+           push(key,s);
+        break;
+        case 2:
+          temp=pop(s);
+          if(temp==-1)
+             printf("Stack Underflow\n");
+          else
+             printf("The popped Element is %c\n",temp);
+        break;
+        case 3:
+           display(s);
+        break;
+        case 4:
+          printf("Enter String to be Checked\n");
+          scanf("%s",t);
+          bp(t,s1);
+        break;
+       default:
+          printf("Entered Wrong Choice number\n");
+          exit(1);
+      }
+    }
+}
+
+
+[18bit034@mepcolinux ex3]$./op 
+1-PUSH
+2-POP
+3-DISPLAY
+4-Balancing_Paranthesis
+Enter the choice number
+1
+Enter the element to be pushed : a
+Top Element is : a
+1-PUSH
+2-POP
+3-DISPLAY
+4-Balancing_Paranthesis
+Enter the choice number
+1
+Enter the element to be pushed : b
+Top Element is : b
+1-PUSH
+2-POP
+3-DISPLAY
+4-Balancing_Paranthesis
+Enter the choice number
+3
+b	a	1-PUSH
+2-POP
+3-DISPLAY
+4-Balancing_Paranthesis
+Enter the choice number
+2
+The popped Element is b
+1-PUSH
+2-POP
+3-DISPLAY
+4-Balancing_Paranthesis
+Enter the choice number
+2
+The popped Element is a
+1-PUSH
+2-POP
+3-DISPLAY
+4-Balancing_Paranthesis
+Enter the choice number
+4
+Enter String to be Checked
+{}
+Top Element is : {
+Correct Sequence
+1-PUSH
+2-POP
+3-DISPLAY
+4-Balancing_Paranthesis
+Enter the choice number
+4
+Enter String to be Checked
+{[]
+Top Element is : {
+Top Element is : [
+Unbalanced
+1-PUSH
+2-POP
+3-DISPLAY
+4-Balancing_Paranthesis
+Enter the choice number
+5
+Entered Wrong Choice number
+[18bit034@mepcolinux ex3]$cat game.h
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+#include<malloc.h>
+typedef struct stack_node
+{
+ int data;
+ struct stack_node *next;
+}node;
+typedef node *ptrtonode;
+typedef ptrtonode stack;
+typedef ptrtonode position;
+int isempty(stack);
+stack intialise();
+void push(int,stack);
+int pop(stack);
+void display(stack);
+
+[18bit034@mepcolinux ex3]$cat gameimp.c 
+#include"game.h"
+stack intialise()
+{
+ stack s;
+ s=(node*)malloc(sizeof(node));
+ if(s==0)
+  printf("Memory allocation failed");
+ return s;
+}
+void push(int a,stack s)
+{
+position temp;
+temp=(node*)malloc(sizeof(node));
+if(temp==NULL)
+ printf("Error");
+else
+{
+ temp->data=a;
+ temp->next=s->next;
+ s->next=temp;
+}
+}
+int pop(stack s)
+{
+ int x;
+ position temp;
+ if(isempty(s))
+  printf("Error");
+ else
+ {
+  x=s->next->data;
+  temp=s->next;
+  s->next=s->next->next;
+  free(temp);
+ return x;
+ }
+}
+int isempty(stack s)
+{
+  return s->next==NULL;
+}
+void display(stack a)
+{
+ position w;
+ w=a->next;
+ while(w!=NULL)
+ {
+  printf("%d\t",w->data);
+  w=w->next;
+ }
+}
+
+[18bit034@mepcolinux ex3]$cat gameapp.c 
+#include"game.h"
+main()
+{
+ int cn;
+ stack s,s1;
+ int g,a[10],b[10],sum=0,count=0,x,i,n,m;
+ printf("\n Enter no of games:");
+ scanf("%d",&g);
+ if(g==0 || g>50)
+  printf("Error in input");
+ for(i=1;i<=g;i++)
+ {
+  printf("\n Enter no of elements in stack A&B and x value:");
+  scanf("%d%d%d",&n,&m,&x);
+  //if(n==0 || m>10^5 || x==0 || x==10^9)
+  // printf("Error in input");
+  s=intialise();
+  s1=intialise();
+ printf("\n Enter stack A value to push!");
+ for(i=0;i<n;i++)
+ { 
+  scanf("%d",&a[i]);
+  push(a[i],s);
+ }
+ printf("\n Enter stack B value to push!");
+ for(i=0;i<m;i++)
+ {
+  scanf("%d",&b[i]);
+  push(b[i],s1);
+ }
+ }
+ printf("The stack elements are\n");
+ display(s);
+ printf("\n");
+ display(s1);
+printf("\n Pop operation!");
+printf("\nThe sum of your poppedvalue should not exceed x!");
+while(1)
+{
+ printf("\nEnter which stack to pop 1-stackA 2-stackB:");
+ scanf("%d",&cn);
+ if(cn==1)
+ {
+  sum+=pop(s);
+  count++;
+  printf("The your sum value and score: %d %d",sum,count);
+ }
+ else if(cn==2)
+ {
+  sum+=pop(s1);
+  count++;
+  printf("The your sum value and score: %d %d",sum,count);
+ }
+ else if(cn==3)
+ {
+   printf("The your score is:%d!\n",count);
+   exit(0);
+ }
+if(sum==x || sum>x)
+{
+ printf("\n You're disqualified!");
+ printf("\n Your score is:%d\n",count);
+ exit(0);
+}
+}
+}
+
+[18bit034@mepcolinux ex3]$./gameop 
+
+ Enter no of games:1
+
+ Enter no of elements in stack A&B and x value:2 2 10
+
+ Enter stack A value to push!5 6 
+
+ Enter stack B value to push!4 8
+The stack elements are
+6	5	
+8	4	
+ Pop operation!
+The sum of your poppedvalue should not exceed x!
+Enter which stack to pop 1-stackA 2-stackB:1
+The your sum value and score: 6 1
+Enter which stack to pop 1-stackA 2-stackB:2
+The your sum value and score: 14 2
+ You're disqualified!
+ Your score is:2
+[18bit034@mepcolinux ex3]$exit
+exit
+
+Script done on Monday 22 July 2019 10:29:15 AM IST

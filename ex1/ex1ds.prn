@@ -1,0 +1,342 @@
+Script started on Thursday 04 July 2019 02:05:24 PM IST
+[18bit034@mepcolinux pgm1]$cat zoo.h
+//Programmed By AUMRUDH LAL KUMAR TJ
+//Program to do operation on array
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<malloc.h>
+typedef struct zoo
+{
+    char animal_name[20];
+    int animal_age;
+    char animal_btime[10];
+    char animal_dtime[10];
+}zoo_animal;
+void insert();
+void delte();
+void search();
+void modify();
+void count();
+[18bit034@mepcolinux pgm1]$cat impzoo.c
+#include"zoo.h"
+void insert(zoo_animal a[],int m)
+{
+    int pos,i;
+    zoo_animal temp;
+    printf("Enter the location where you wish to insert \n");
+    scanf("%d",&pos);
+    //getting new details to be inserted
+    printf("Enter animal name\n");
+    scanf("%s",temp.animal_name);
+    printf("Enter animal age\n");
+    scanf("%d",&temp.animal_age);
+    printf("Enter animal BreakFast Time\n");
+    scanf("%s",temp.animal_btime);
+    printf("Enter animal Dinner Time\n");
+    scanf("%s",temp.animal_dtime);
+    //moving and making a vacant positon 
+    for(i=m-1;i>=pos-1;i--)
+      {
+        a[i+1]=a[i];
+      }
+    //insertion of new details
+    for(i=0;i<m;i++)
+    a[pos-1]=temp;
+      printf("Name\tAge\tBreakfast_Time\tDinner_time\n");
+    for(i=0;i<m+1;i++)
+    {
+      printf("%s\t",a[i].animal_name);
+      printf("%d\t",a[i].animal_age);
+      printf("%s\t",a[i].animal_btime);
+      printf("%s\n",a[i].animal_dtime);
+    }
+}
+void delte(zoo_animal a[],int m)
+{
+    int found,pos,i;
+    char name[20];
+    printf("Enter the name of the animal to be deleted\n");
+    scanf("%s",name);
+    for(i=0;i<m;i++)
+      {
+        if(strcmp(name,a[i].animal_name)==0)
+         {
+           found=1;
+           pos=i;
+           break;
+         }
+      }
+    if(found==1)
+     {
+      for(i=pos;i<=m-1;i++)
+        {
+          a[i]=a[i+1];
+        }
+     }
+      printf("Name\tAge\tBreakfast_Time\tDinner_time\n");
+    for(i=0;i<m-1;i++)
+    {
+      printf("%s\t",a[i].animal_name);
+      printf("%d\t",a[i].animal_age);
+      printf("%s\t",a[i].animal_btime);
+      printf("%s\n",a[i].animal_dtime);
+    }
+}
+void search(zoo_animal a[],int m)
+{
+    char key[20];
+    int found,pos=0,ch,i;
+    printf("Enter the search animal name\n");
+    scanf("%s",key);
+    for(i=0;i<m;i++)
+    {
+     if(strcmp(key,a[i].animal_name)==0)
+         {
+           found=1;
+           pos=i+1;
+           printf("The element is found at the position %d\n",pos);
+         }
+    }
+   printf("Do u want to display search details\n1-Yes\n2-No\n");
+   scanf("%d",&ch);
+   if(ch==1)
+    {
+      printf("Name\tAge\tBreakfast_Time\tDinner_time\n");
+      for(i=0;i<pos-1;i++)
+      {
+      printf("%s\t%d\t%s\t%s\n",a[pos-1].animal_name,a[pos-1].animal_age,a[pos-1].animal_btime,a[pos-1].animal_dtime);
+      }
+    }
+}
+void display(zoo_animal a[],int m)
+{
+    int i;
+    printf("Name\tAge\tBreakfast_Time\tDinner_time\n");
+    for(i=0;i<m;i++)
+    {
+      printf("%s\t",a[i].animal_name);
+      printf("%d\t",a[i].animal_age);
+      printf("%s\t",a[i].animal_btime);
+      printf("%s\n",a[i].animal_dtime);
+    }
+}
+void modify(zoo_animal a[],int m)
+{
+    zoo_animal temp;
+    int i,pos=0;
+    printf("Enter the new details to be modified\n");
+    //getting new details to be inserted
+    printf("Enter animal name\n");
+    scanf("%s",temp.animal_name);
+    printf("Enter animal age\n");
+    scanf("%d",&temp.animal_age);
+    printf("Enter animal BreakFast Time\n");
+    scanf("%s",temp.animal_btime);
+    printf("Enter animal Dinner Time\n");
+    scanf("%s",temp.animal_dtime);
+    printf("Enter the location where you wish to modify \n");
+    scanf("%d",&pos);
+    for(i=0;i<m;i++)
+     {
+       a[pos-1]=temp;
+     }
+}
+void count(zoo_animal a[],int n)
+{
+    int i,key,count=0;
+    printf("Enter the age to be counted\n");
+    scanf("%d",&key);
+    for(i=0;i<n;i++)
+     {
+      if(key==a[i].animal_age)
+       {
+         count++;
+       }
+     }
+    printf("The number of animal with age %d is %d\n",key,count);
+}
+[18bit034@mepcolinux pgm1]$cat appzoo.c
+#include"zoo.h"
+main()
+{
+     zoo_animal animal[10];
+     int n,i,ch;
+     printf("Enter the Number of animals\n");
+     scanf("%d",&n);
+     for(i=0;i<n;i++)
+       {
+         printf("Enter the animal %d Name\n",i+1);
+         scanf("%s",animal[i].animal_name);
+         printf("Enter the animal %d Age\n",i+1);
+         scanf("%d",&animal[i].animal_age);
+         printf("Enter the animal %d Breakfast_Time\n",i+1);
+         scanf("%s",animal[i].animal_btime);
+         printf("Enter the animal %d Dinner_Time\n",i+1);
+         scanf("%s",animal[i].animal_dtime);
+       }
+     while(1)
+     {
+     printf("Enter the choice\n1-Insert\n2-Delete");
+     printf("\n3-Modify\n4-Search\n5-Display\n6-Count Age\n");
+     scanf("%d",&ch);
+     switch(ch)
+      {
+        case 1:
+                insert(animal,n);
+                break;
+        case 2:
+                delte(animal,n);
+                break;
+        case 3:
+                modify(animal,n);
+                break;
+        case 4: 
+                search(animal,n);
+                break;
+        case 5:
+                display(animal,n);
+                break;
+        case 6:
+                count(animal,n);
+                break;
+        default:
+                printf("Invalid Choice\n");
+                 exit(1);
+     }
+    }
+}
+[18bit034@mepcolinux pgm1]$cc -c impzoo.c
+[18bit034@mepcolinux pgm1]$cc appzoo.c -o zoo impzoo.o
+[18bit034@mepcolinux pgm1]$./zoo 
+Enter the Number of animals
+2
+Enter the animal 1 Name
+tiger
+Enter the animal 1 Age
+5
+Enter the animal 1 Breakfast_Time
+5am
+Enter the animal 1 Dinner_Time
+5pm
+Enter the animal 2 Name
+lion
+Enter the animal 2 Age
+10
+Enter the animal 2 Breakfast_Time
+10am
+Enter the animal 2 Dinner_Time
+10pm
+Enter the choice
+1-Insert
+2-Delete
+3-Modify
+4-Search
+5-Display
+6-Count Age
+6
+Enter the age to be counted
+5
+The number of animal with age 5 is 1
+Enter the choice
+1-Insert
+2-Delete
+3-Modify
+4-Search
+5-Display
+6-Count Age
+5
+Name1 	Age	Breakfast_Time	Dinner_time
+tiger	5	5am	5pm
+lion	10	10am	10pm
+Enter the choice
+1-Insert
+2-Delete
+3-Modify
+4-Search
+5-Display
+6-Count Age
+4
+Enter the search animal name
+tiger
+The element is found at the position 1
+Do u want to display search details
+1-Yes
+2-No
+2
+Enter the choice
+1-Insert
+2-Delete
+3-Modify
+4-Search
+5-Display
+6-Count Age
+3
+Enter the new details to be modified
+Enter animal name
+eagle
+Enter animal age
+6
+Enter animal BreakFast Time
+6am
+Enter animal Dinner Time
+6pm
+Enter the location where you wish to modify 
+2
+Enter the choice
+1-Insert
+2-Delete
+3-Modify
+4-Search
+5-Display
+6-Count Age
+5
+Name	Age	Breakfast_Time	Dinner_time
+tiger	5	5am	5pm
+eagle	6	6am	6pm
+Enter the choice
+1-Insert
+2-Delete
+3-Modify
+4-Search
+5-Display
+6-Count Age
+2
+Enter the name of the animal to be deleted
+tiger
+Name	Age	Breakfast_Time	Dinner_time
+eagle	6	6am	6pm
+Enter the choice
+1-Insert
+2-Delete
+3-Modify
+4-Search
+5-Display
+6-Count Age
+1
+Enter the location where you wish to insert 
+2
+Enter animal name
+lion
+Enter animal age
+5
+Enter animal BreakFast Time
+5am
+Enter animal Dinner Time
+5pm
+Name	Age	Breakfast_Time	Dinner_time
+eagle	6	6am	6pm
+lion	5	5am	5pm
+Enter the choice
+1-Insert
+2-Delete
+3-Modify
+4-Search
+5-Display
+6-Count Age
+7
+Invalid Choice
+[18bit034@mepcolinux pgm1]$exit
+exit
+
+Script done on Thursday 04 July 2019 02:07:35 PM IST

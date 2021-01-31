@@ -1,0 +1,680 @@
+Script started on Thu 22 Aug 2019 02:22:59 PM IST
+[18bit034@mepcolinux ex5]$cat tree.h
+
+//BINARY SEARCH TREE
+//PROGRAMMED BY AUMRUDH LAL KUMAR TJ
+
+
+#include<stdio.h>
+#include<malloc.h>
+#include<string.h>
+#include<stdlib.h>
+typedef struct node
+{
+ int data;
+ struct node *left;
+ struct node *right;
+}treenode;
+typedef treenode *treeptr;
+treeptr insert(int,treeptr);
+treeptr find(int,treeptr);
+treeptr findmin(treeptr);
+treeptr findmax(treeptr);
+treeptr Delete(int,treeptr);
+void preordertravresal(treeptr);
+void inordertravresal(treeptr);
+void postordertravresal(treeptr);
+treeptr count(treeptr);
+
+[18bit034@mepcolinux ex5]$cat imptree.c
+
+
+#include"tree.h"
+treeptr insert(int x,treeptr t)
+{
+ treeptr temp;
+ if(t==NULL)
+ {
+  temp=(treenode*)malloc(sizeof(treenode));
+  if(temp==NULL)
+  {
+   printf("No memory allocation!");
+   exit(-1);
+  }
+  else
+  {
+    temp->data=x;
+    temp->left=NULL;
+    temp->right=NULL;
+  }
+  t=temp;
+}
+  else if(t!=NULL)
+  {
+   if(x<t->data)
+    t->left=insert(x,t->left);
+   else if(x>t->data)
+    t->right=insert(x,t->right);
+  }
+ return t;
+}
+treeptr find(int x,treeptr t)
+{
+ if(t==NULL)
+  return NULL;
+ if(x<t->data)
+  return find(x,t->left);
+ else if(x>t->data)
+  return find(x,t->right);
+ else
+   return t;
+}
+treeptr findmax(treeptr t)
+{
+  if(t!=NULL)
+   while(t->right!=NULL)
+     t=t->right;
+ return t;
+}
+treeptr findmin(treeptr t)
+{
+  if(t!=NULL)
+   while(t->left!=NULL)
+     t=t->left;
+ return t;
+}
+
+treeptr count(treeptr t)
+{
+   if(t==NULL) 
+   {
+    return 0;
+   }
+   else
+   {
+    int lheight=count(t->left);
+    int rheight=count(t->right);
+    int tot=lheight+rheight;
+    return (tot+1);
+   }
+}
+treeptr Delete(int x,treeptr t)
+{
+  treeptr temp;
+  if(t==NULL)
+    printf("Empty tree");
+  else if(x<t->data)
+    t->left=Delete(x,t->left);
+  else if(x>t->data)
+    t->right=Delete(x,t->right);
+  else if(t->left && t->right)
+  {
+    temp=findmax(t->left);
+    t->data=temp->data;
+    t->left=Delete(t->data,t->left);
+  }
+  else
+  {
+    temp=t;
+    if(t->left==NULL)
+     t=t->right;
+    else if(t->right==NULL)
+      t=t->left;
+    free(temp);
+   }
+   return t;
+}
+void inordertravresal(treeptr t)
+{
+  if(t!=NULL)
+  {
+inordertravresal(t->left);
+    printf("%d\t",t->data);
+    inordertravresal(t->right);
+ }  
+}
+void preordertravresal(treeptr t)
+{
+  if(t!=NULL)
+  {
+    printf("%d\t",t->data);
+    preordertravresal(t->left);
+    preordertravresal(t->right);
+
+  }
+}
+void postordertravresal(treeptr t)
+{
+  if(t!=NULL)
+  {
+     postordertravresal(t->left);
+     postordertravresal(t->right);
+     printf("%d\t",t->data);
+   }
+}
+
+[18bit034@mepcolinux ex5]$cat apptree.c
+#include"tree.h"
+main()
+{
+ int k,che,ch,x,y,z,res,p;
+ treeptr t,temp,temp1,temp2;
+ while(1)
+ {
+  printf("\n\t1-Insert\n\t2-Delete\n\t3-Find\n\t4-Findmin\n\t5-Findmax\n\t6-Display\n\t7-Count\n\t8-Exit\n");
+  printf("\tEnter your Choice : ");
+  scanf("%d",&ch);
+  if(ch==1)
+  {
+   printf("\n Enter the element to be inserted : ");
+   scanf("%d",&x);
+   t=insert(x,t);
+  }
+  else if(ch==2)
+  {
+   printf("\nEnter the element to be deleted : ");
+   scanf("%d",&y);
+   t=Delete(y,t);
+  }
+  else if(ch==3)
+  {
+   printf("\n Enter the element to be searched : ");
+   scanf("%d",&z);
+   temp=find(z,t);
+   if(temp!=NULL)
+    printf("\n%d Element present \n",temp->data);
+   else
+    printf("\nElement Not Present\n");
+  }
+  else if(ch==4)
+  {
+   temp2=findmin(t);
+   printf("\n The minimum element in the tree is %d",temp2->data);
+  }
+  else if(ch==5)
+  {
+   temp2=findmax(t);
+   printf("\n The maximum element in the tree is %d",temp2->data);
+  }
+ else if(ch==6)
+ {
+ printf("\n\t1-Inorder\n\t2-Preorder\n\t3-Postorder\n");
+ printf("Enter your choice : ");
+  scanf("%d",&che);
+  if(che==1)
+   inordertravresal(t);
+  else if(che==2)
+   preordertravresal(t);
+  else if(che==3)
+   postordertravresal(t);
+  else
+    exit(-1);
+  }
+ else if(ch==7)
+  {
+   p=count(t);
+   printf("Total Number of Nodes is %d \n",p); 
+  }
+ else
+  {
+   printf("\n Invalid option\n");
+   exit(-1);
+}
+}
+}
+
+
+[18bit034@mepcolinux ex5]$./op 
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 57
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 25
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 34
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 37
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 36
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 42
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 105
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 112
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 103
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 104
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 119
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 117
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 125
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 15
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 10
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 6
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 14
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 27
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 6
+
+	1-Inorder
+	2-Preorder
+	3-Postorder
+Enter your choice : 1
+6	10	14	15	25	27	34	36	37	42	57	103	104	105	112	117	119	125	
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 6
+
+	1-Inorder
+	2-Preorder
+	3-Postorder
+Enter your choice : 2
+57	25	15	10	6	14	34	27	37	36	42	105	103	104	112	119	117	125	
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 6
+
+	1-Inorder
+	2-Preorder
+	3-Postorder
+Enter your choice : 3
+6	14	10	15	27	36	42	37	34	25	104	103	117	125	119	112	105	57	
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 7
+Total Number of Nodes is 18 
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 3
+
+ Enter the element to be searched : 6
+
+6 Element present 
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 3
+
+ Enter the element to be searched : 5
+
+Element Not Present
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 4
+
+ The minimum element in the tree is 6
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 5
+
+ The maximum element in the tree is 125
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 2
+
+Enter the element to be deleted : 119
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 2
+
+Enter the element to be deleted : 105
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 2
+
+Enter the element to be deleted : 15
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 2
+
+Enter the element to be deleted : 27
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 2
+
+Enter the element to be deleted : 57
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 6
+
+	1-Inorder
+	2-Preorder
+	3-Postorder
+Enter your choice : 1
+6	10	14	25	34	36	37	42	103	104	112	117	125	
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 6
+
+	1-Inorder
+	2-Preorder
+	3-Postorder
+Enter your choice : 2
+42	25	10	6	14	34	37	36	104	103	112	117	125	
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 6
+
+	1-Inorder
+	2-Preorder
+	3-Postorder
+Enter your choice : 3
+6	14	10	36	37	34	25	103	125	117	112	104	42	
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 7
+Total Number of Nodes is 13 
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Count
+	8-Exit
+	Enter your Choice : 8
+
+ Invalid option
+[18bit034@mepcolinux ex5]$exit
+exit
+
+Script done on Thu 22 Aug 2019 02:26:20 PM IST

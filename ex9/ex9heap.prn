@@ -1,0 +1,171 @@
+Script started on Thursday 26 September 2019 03:17:08 PM IST
+[18bit034@mepcolinux ex9]$cat heap.h 
+
+//PROGRAMMED BY AUMRUDH LAL KUMAR TJ
+//MIN HEAP 
+
+#include<stdio.h>
+#include<stdlib.h>
+struct node
+{
+   int *array;
+   int size;
+   int capacity;
+};
+typedef struct node *heap;
+heap create(int);
+heap insert(int,heap);
+heap deletemin(heap);
+int isempty(heap);
+int isfull(heap);
+void display(heap);
+void search(int,heap);
+
+
+[18bit034@mepcolinux ex9]$cat impheap.c
+
+
+#include"heap.h"
+heap create(int n)
+{
+   heap h;
+   h=(heap)malloc(sizeof(struct node));
+   h->array=(int*)malloc(n*sizeof(int));
+   h->size=0;
+   h->capacity=n;
+   return h;
+}
+heap insert(int x,heap h)
+{
+  int i;
+  if(!isfull(h))
+  {//h->size++;
+    for(i=++h->size;h->array[i/2]>x;i/=2)
+    {
+      h->array[i]=h->array[i/2];
+    }
+    h->array[i]=x;
+    return h;
+  }
+  else
+    return NULL;
+}
+int isfull(heap h)
+{
+    if(h->size==h->capacity)
+       return 1;
+    else
+       return 0;
+}
+int isempty(heap h)
+{
+    if(h->size==0)
+       return 1;
+    else
+       return 0;
+}
+void display(heap h)
+{
+   int i;
+   for(i=1;i<=h->size;i++)
+      {
+         printf("%d\t",h->array[i]);
+      }
+}
+heap deletemin(heap h)
+{
+   int child,x,i;
+   if(!isempty(h))
+     {
+       x=h->array[h->size];
+       h->size--;
+       for(i=1;2*i<=h->size;i=2*i)
+        {
+          child=2*i;
+          if((child!=h->size)&&(h->array[child+1]>h->array[child]))
+            child=child+1;
+          if(h->array[child]>x)
+             h->array[i]=h->array[child];
+          else
+             break;
+         }
+      h->array[i]=x;
+      return h;
+     }
+}
+
+
+
+[18bit034@mepcolinux ex9]$cat appheap.c
+
+#include"heap.h"
+main()
+{
+   int ch,siz,i,no;
+   heap h;
+   printf("Enter heap size : ");
+   scanf("%d",&siz);
+   h=create(siz);
+   while(1)
+    {
+      printf("1-Insert\n2-Delete\n3-Display\n");
+      printf("Enter your choice : ");
+      scanf("%d",&ch);
+      switch(ch)
+      {
+        case 1:
+		printf("Enter a number to insert : ");
+ 		scanf("%d",&no);
+                h=insert(no,h);
+           	break;
+   	case 2:
+          	h=deletemin(h);
+                break;
+        case 3:
+                display(h); 
+                break;
+ 	default:
+      		printf("Wrong choice\n");
+ 		exit(1);
+      }
+    }
+}
+        
+[18bit034@mepcolinux ex9]$./op 
+Enter heap size : 5
+1-Insert
+2-Delete
+3-Display
+Enter your choice : 1
+Enter a number to insert : 25
+1-Insert
+2-Delete
+3-Display
+Enter your choice : 1
+Enter a number to insert : 34
+1-Insert
+2-Delete
+3-Display
+Enter your choice : 1
+Enter a number to insert : 7
+1-Insert
+2-Delete
+3-Display
+Enter your choice : 3
+7	34	25	1-Insert
+2-Delete
+3-Display
+Enter your choice : 2
+1-Insert
+2-Delete
+3-Display
+Enter your choice : 3
+34	25	1-Insert
+2-Delete
+3-Display
+Enter your choice : 4
+Wrong choice
+[18bit034@mepcolinux ex9]$exit
+exit
+
+Script done on Thursday 26 September 2019 03:17:39 PM IST

@@ -1,0 +1,392 @@
+Script started on Thursday 19 September 2019 01:42:25 PM IST
+
+
+//SPLAY TREE 
+
+[18bit034@mepcolinux ex7]$cat hf.h 
+
+
+#include<stdio.h>
+#include<stdlib.h>
+struct node
+{
+        int element;
+        struct node *left;
+        struct node *right;
+	struct node *parent;
+};
+typedef struct node splay;
+splay *t;
+splay* create();
+splay* insert(int,splay *,splay *);
+splay* delete(splay *);
+splay* minValueNode(splay *);
+splay* splays(int,splay*);
+splay* update(splay *,splay *);
+splay* find(int,splay *);
+splay* zig(splay *);
+splay* zag(splay *);
+void display(splay *);
+void preordertravresal(splay *);
+void inordertravresal(splay *);
+void postordertravresal(splay *);
+
+
+
+[18bit034@mepcolinux ex7]$cat imp.c
+
+
+#include"hf.h"
+splay* create()
+{
+        splay *temp;
+        temp = (splay*)malloc(sizeof(splay));
+        if(temp == NULL)
+                return NULL;
+        temp->left = temp->right = NULL;
+        return temp;
+}
+void inordertravresal(splay *t)
+{
+  if(t!=NULL)
+  {
+    inordertravresal(t->left);
+    printf("%d\t",t->element);
+    inordertravresal(t->right);
+ }
+//  if(t->parent == NULL)
+  //     printf("%d is the root\n",t->element);
+}
+void preordertravresal(splay *t)
+{
+  if(t!=NULL)
+  {
+    printf("%d\t",t->element);
+    preordertravresal(t->left);
+    preordertravresal(t->right);
+  }
+ // if(t->parent == NULL)
+  //  printf("%d is the root\n",t->element);
+}
+void postordertravresal(splay *t)
+{
+  if(t!=NULL)
+  {
+     postordertravresal(t->left);
+     postordertravresal(t->right);
+     printf("%d\t",t->element);
+   }
+ // if(t->parent == NULL)
+  //    printf("%d is the root\n",t->element); 
+}
+splay* insert(int x,splay *tree,splay *parent)
+{
+        if(tree == NULL)
+        {
+                splay *temp;
+                if((temp = create()) == NULL)
+                        return tree;
+                temp->element = x;
+		temp->parent = parent;
+		t = temp;
+                return temp;
+        }
+        else
+        {
+                if(x > tree->element)
+                        tree->right = insert(x,tree->right,tree);
+                else if(x < tree->element)
+                        tree->left = insert(x,tree->left,tree);
+                return tree;
+        }
+}
+splay* delete(splay *tree)
+{
+	splay *s,*l;
+	if(tree->right == NULL)
+	{
+		l = tree->left;
+		free(tree);
+		return l;
+	}
+	s = minValueNode(tree->right);
+	s->left = tree->left;
+	s->right = tree->right;
+	free(tree);
+	return s;
+}
+splay* splays(int x,splay *root)
+{
+	while(x != root->element)
+	{
+		if(t->parent == root)
+			if(t == root->left)
+				root = zig(root);
+			else
+				root = zag(root);
+		else
+		{
+			splay *p = t->parent;
+			splay *gp = p->parent;
+			if(p == gp->left)
+				if(t == p->left)
+				{
+					if(gp == root)
+					{
+						root = zig(gp);
+						root = zig(p);	
+					}
+					else if(x < gp->parent->element)
+					{
+						gp->parent->left = zig(gp);
+						gp->parent->left = zig(p);
+					}
+					else if(x > gp->parent->element)
+                                        {
+                                                gp->parent->right = zig(gp);
+                                                gp->parent->right = zig(p);
+                                        }
+				}
+				else
+				{
+					gp->left = zag(p);
+					if(gp == root)
+						root = zig(gp);
+					else if(x < gp->parent->element)
+						gp->parent->left = zig(gp);
+					else if(x > gp->parent->element)
+                                                gp->parent->right = zig(gp);
+				}
+			else
+				if(t == p->right)
+				{
+					if(gp == root)
+					{
+                                                root = zag(gp);
+                                                root = zag(p);  
+                                        }
+					else if(x < gp->parent->element)
+                                        {
+                                                gp->parent->left = zag(gp);
+                                                gp->parent->left = zag(p);
+                                        }
+					else if(x > gp->parent->element)
+					{
+						gp->parent->right = zag(gp);
+						gp->parent->right = zag(p);
+					}
+				}
+				else
+				{
+					gp->right = zig(p);
+					if(gp == root)
+						root = zag(gp);
+					else if(x < gp->parent->element)
+                                                gp->parent->left = zag(gp);
+					else if(x > gp->parent->element)
+						gp->parent->right = zag(gp);
+				}
+		}
+		update(root,NULL);
+	}
+	return root;
+}
+splay* update(splay *tree,splay* parent)
+{
+	if(tree != NULL)
+	{
+		tree->parent = parent;
+		update(tree->left,tree);
+		tree->parent = parent;
+		update(tree->right,tree);
+	}
+}
+splay* zig(splay *k2)
+{
+        splay *k1 = k2->left;
+        k2->left = k1->right;
+        k1->right = k2;
+        return k1;
+}
+splay* zag(splay *k2)
+{
+        splay *k1 = k2->right;
+        k2->right = k1->left;
+        k1->left = k2;
+        return k1;
+}
+splay* find(int x,splay *tree)
+{
+	splay *t = tree;
+        while(t != NULL)
+        {
+                if(x == t->element)
+                        return t;
+                else if(x < t->element)
+                        t = t->left;
+                else if(x > t->element)
+                        t = t->right;
+        }
+        return NULL;
+}
+splay* minValueNode(splay* node)
+{
+	splay *root = node->parent;
+	if(node->left == NULL)
+	{
+		root->right = node->right;
+		update(root,NULL);
+		return node;
+	}
+	while (node->left != NULL)
+        	node = node->left;
+	node->parent->left = node->right;
+	return node;
+}
+/*void display(splay *tree)
+{
+        if(tree != NULL)
+        {
+                display(tree->left);
+		if(tree->parent == NULL)
+			printf("%d is the root\n",tree->element);
+		else
+                	printf("%d is the parent of %d\n",tree->parent->element,tree->element);
+                display(tree->right);
+        }
+}*/
+
+
+
+[18bit034@mepcolinux ex7]$cat app.c
+
+
+
+#include "hf.h"
+int main()
+{
+	int x,choice,che;
+	splay *root = NULL;
+	printf("\n1 - Insert\n2 - Delete\n3 - Search\n4 - Display\n5 - Exit");
+	do{
+            printf("\nEnter your choice : \t");
+            scanf("%d",&choice);
+	    switch(choice)
+             {
+                case 1: printf("Enter a Number to insert : ");
+                        scanf("%d",&x);
+			if((t = find(x,root)) != NULL)
+                        	root = splays(x,root);
+			else
+			{
+				root = insert(x,root,NULL);
+				root = splays(x,root);
+			}
+                        break;
+		case 2: printf("Enter the number to delete : ");
+			scanf("%d",&x);
+			if((t = find(x,root)) != NULL)
+                        {
+                                root = splays(x,root);
+				root = delete(root);
+				update(root,NULL);
+				printf("%d is deleted successfully ...\n",x);
+                        }
+                        else
+                                printf("Deletion Failed ...\n");
+			break;
+		case 3: printf("Enter a number to search : ");
+			scanf("%d",&x);
+			if((t = find(x,root)) != NULL)
+			{
+				printf("The Searched element is found ...\n");
+				root = splays(x,root);
+			}
+			else
+				printf("The searched element is not found ...\n");
+			break;
+		case 4: if(root == NULL)
+				printf("There is no element in the tree...\n");
+			else{
+			      printf("\n");
+			      printf("\n\t1-Inorder\n\t2-Preorder\n\t3-Postorder\n");
+  		              printf("Enter your choice : ");
+  			      scanf("%d",&che);
+			      if(che==1)
+          			 inordertravresal(root);
+			      else if(che==2)
+ 			          preordertravresal(root);
+ 		 	      else if(che==3)
+			           postordertravresal(root);
+			      else
+      			          exit(-1);
+				//display(root);
+                            }
+			break;
+		case 5: free(root);
+			exit(1);
+        }
+	  }while(1);
+}
+
+[18bit034@mepcolinux ex7]$./out 
+
+1 - Insert
+2 - Delete
+3 - Search
+4 - Display
+5 - Exit
+Enter your choice : 	1
+Enter a Number to insert : 25
+
+Enter your choice : 	1
+Enter a Number to insert : 16
+
+Enter your choice : 	1
+Enter a Number to insert : 3
+
+Enter your choice : 	1
+Enter a Number to insert : 9
+
+Enter your choice : 	1
+Enter a Number to insert : 10
+
+Enter your choice : 	1
+Enter a Number to insert : 4
+
+Enter your choice : 	2
+Enter the number to delete : 4
+4 is deleted successfully ...
+
+Enter your choice : 	4
+
+
+	1-Inorder
+	2-Preorder
+	3-Postorder
+Enter your choice : 1
+3	9	10	16	25	
+Enter your choice : 	3
+Enter a number to search : 13
+The searched element is not found ...
+
+Enter your choice : 	3
+Enter a number to search : 3
+The Searched element is found ...
+
+Enter your choice : 	1
+Enter a Number to insert : 34
+
+Enter your choice : 	4
+
+
+	1-Inorder
+	2-Preorder
+	3-Postorder
+Enter your choice : 2
+34	3	25	10	9	16	
+Enter your choice : 	5
+[18bit034@mepcolinux ex7]$exit
+exit
+
+Script done on Thursday 19 September 2019 01:44:09 PM IST

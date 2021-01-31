@@ -1,0 +1,182 @@
+Script started on Saturday 12 October 2019 05:28:03 PM IST
+[18bit034@mepcolinux graph]$cat prim.c 
+
+//Graph
+
+#include<stdio.h>
+#include<stdlib.h>
+ 
+#define infinity 9999
+#define MAX 20
+ 
+int G[MAX][MAX],spanning[MAX][MAX],n;
+ 
+int prims();
+ 
+int main()
+{
+	int i,j,total_cost;
+	printf("Enter no. of vertices:");
+	scanf("%d",&n);
+	
+	printf("\nEnter the adjacency matrix:\n");
+	
+	for(i=0;i<n;i++)
+		for(j=0;j<n;j++)
+			scanf("%d",&G[i][j]);
+	
+	total_cost=prims();
+	printf("\nspanning tree matrix:\n");
+	
+	for(i=0;i<n;i++)
+	{
+		printf("\n");
+		for(j=0;j<n;j++)
+			printf("%d\t",spanning[i][j]);
+	}
+	
+	printf("\n\nTotal cost of spanning tree=%d",total_cost);
+	return 0;
+}
+ 
+int prims()
+{
+	int cost[MAX][MAX];
+	int u,v,min_distance,distance[MAX],from[MAX];
+	int visited[MAX],no_of_edges,i,min_cost,j;
+	
+	//create cost[][] matrix,spanning[][]
+	for(i=0;i<n;i++)
+		for(j=0;j<n;j++)
+		{
+			if(G[i][j]==0)
+				cost[i][j]=infinity;
+			else
+				cost[i][j]=G[i][j];
+				spanning[i][j]=0;
+		}
+		
+	//initialise visited[],distance[] and from[]
+	distance[0]=0;
+	visited[0]=1;
+	
+	for(i=1;i<n;i++)
+	{
+		distance[i]=cost[0][i];
+		from[i]=0;
+		visited[i]=0;
+	}
+	
+	min_cost=0;		//cost of spanning tree
+	no_of_edges=n-1;		//no. of edges to be added
+	
+	while(no_of_edges>0)
+	{
+		//find the vertex at minimum distance from the tree
+		min_distance=infinity;
+		for(i=1;i<n;i++)
+			if(visited[i]==0&&distance[i]<min_distance)
+			{
+				v=i;
+				min_distance=distance[i];
+			}
+			
+		u=from[v];
+		
+		//insert the edge in spanning tree
+		spanning[u][v]=distance[v];
+		spanning[v][u]=distance[v];
+		no_of_edges--;
+		visited[v]=1;
+		
+		//updated the distance[] array
+		for(i=1;i<n;i++)
+			if(visited[i]==0&&cost[i][v]<distance[i])
+			{
+				distance[i]=cost[i][v];
+				from[i]=v;
+			}
+		
+		min_cost=min_cost+cost[u][v];
+	}
+	
+	return(min_cost);
+}
+[18bit034@mepcolinux graph]$cc prim.c 
+[18bit034@mepcolinux graph]$./a.out 
+Enter no. of vertices:3 4
+
+Enter the adjacency matrix:
+0 1 2 3
+4 5 6 7
+0 0 5 4
+4 6 7 0
+
+spanning tree matrix:
+
+0	1	2	3	
+1	0	0	0	
+2	0	0	0	
+3	0	0	0	
+
+Total cost of spanning tree=6[18bit034@mepcolinux graph]$cat all.c 
+#include<stdio.h>
+#include<stdlib.h>
+int main()
+{
+        int A[4][4],i,j,k,n;
+        printf("Enter the total no of vertices : ");
+        scanf("%d",&n);
+        printf("\nEnter the path of distance of vertices in matrix order : \n\n");
+        for(i=0; i<n; i++)
+        {
+                for(j=0; j<n; j++)
+                {
+                        scanf("%d",&A[i][j]);
+                }
+        }
+        for(i=0; i<n; i++)
+  {
+    for(j=0; j<n; j++)
+    {
+      for(k=0; k<n; k++)
+            {
+                 if(A[i][j] > A[i][k]+A[k][j])
+                                                A[i][j] = A[i][k]+A[k][j];
+          }
+
+    }
+  }
+        printf("\n\n\nFinal Answer is : \n\n");
+  for(i=0; i<n; i++)
+  {
+    for(j=0; j<n; j++)
+    {
+      printf("%d\t",A[i][j]);
+    }printf("\n");
+  }
+}
+
+[18bit034@mepcolinux graph]$c [Kc all.c 
+[18bit034@mepcolinux graph]$,[K./a.out 
+Enter the total no of vertices : 4
+
+Enter the path of distance of vertices in matrix order : 
+
+0 3 999 1
+1 2 3 4
+0 3 99  9 7
+0 1 23  3
+
+
+
+Final Answer is : 
+
+0	2	3	1	
+1	2	3	2	
+0	2	3	1	
+0	1	2	1	
+[18bit034@mepcolinux graph]$exit
+exit
+
+Script done on Saturday 12 October 2019 05:32:57 PM IST

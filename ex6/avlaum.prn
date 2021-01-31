@@ -1,0 +1,621 @@
+Script started on Thursday 12 September 2019 03:32:23 PM IST
+[18bit034@mepcolinux ex6]$cat tree.h 
+//AVL TREE
+//PROGRAMMED BY AUMRUDH LAL KUMAR TJ
+
+
+#include<stdio.h>
+#include<stdlib.h>
+typedef struct node
+{
+ int data;
+ int height;
+ struct node *left;
+ struct node *right;
+}treenode;
+typedef treenode *treeptr;
+treeptr insert(int,treeptr);
+treeptr find(int,treeptr);
+treeptr findmin(treeptr);
+treeptr findmax(treeptr);
+treeptr Delete(int,treeptr);
+void preordertravresal(treeptr);
+void inordertravresal(treeptr);
+void postordertravresal(treeptr);
+treeptr count(treeptr);
+int getbalance(treeptr);
+int max(int,int);
+int Height(treeptr);
+treeptr right(treeptr);
+treeptr left(treeptr);
+
+
+[18bit034@mepcolinux ex6]$cat impavl.c
+
+
+#include"tree.h"
+treeptr insert(int x,treeptr t)
+{
+ treeptr temp;
+ if(t==NULL)
+ {
+  temp=(treenode*)malloc(sizeof(treenode));
+  if(temp==NULL)
+  {
+   printf("No memory allocation!");
+   exit(-1);
+  }
+  else
+  {
+    temp->data=x;
+    temp->left=NULL;
+    temp->right=NULL;
+    temp->height=0;
+  }
+  t=temp;
+}
+  else if(t!=NULL)
+  {
+   if(x<t->data)
+   { 
+    t->left=insert(x,t->left);
+    if((Height(t->left)-Height(t->right))==2)
+     {
+        if(x<t->left->data)
+           t=right(t);
+        else
+           t=left(t);
+     }
+   }  
+   else if(x>t->data)
+    {  
+    t->right=insert(x,t->right);
+    if((Height(t->left)-Height(t->right))==-2)
+     {
+        if(x>t->right->data)
+           t=left(t);
+        else
+           t=right(t);
+     }
+     }
+  }
+   else
+    {
+     printf("\n");
+    }
+  t->height=max(Height(t->left),Height(t->right));
+ return t;
+}
+int max(int x,int y)
+{
+   if(x>y)
+     return x;
+   else
+     return y;
+}
+int Height(treeptr t)
+{
+    if(t==NULL)
+      return 0;
+    else
+      return t->height;
+}
+treeptr find(int x,treeptr t)
+{
+ if(t==NULL)
+  return NULL;
+ if(x<t->data)
+  return find(x,t->left);
+ else if(x>t->data)
+  return find(x,t->right);
+ else
+   return t;
+}
+treeptr findmax(treeptr t)
+{
+  if(t!=NULL)
+   while(t->right!=NULL)
+     t=t->right;
+ return t;
+}
+treeptr findmin(treeptr t)
+{
+  if(t!=NULL)
+   while(t->left!=NULL)
+     t=t->left;
+ return t;
+}
+
+/*treeptr count(treeptr t)
+{
+   if(t==NULL) 
+   {
+    return 0;
+   }
+   else
+   {
+    int lheight=count(t->left);
+    int rheight=count(t->right);
+    int tot=lheight+rheight;
+    return (tot+1);
+   }
+}*/
+treeptr Delete(int x,treeptr t)
+{
+  treeptr temp;
+  int bal;
+  if(t==NULL)
+    printf("Empty tree");
+  else if(x<t->data)
+    t->left=Delete(x,t->left);
+  else if(x>t->data)
+    t->right=Delete(x,t->right);
+  else if(t->left && t->right)
+  {
+    temp=findmax(t->left);
+    t->data=temp->data;
+    t->left=Delete(t->data,t->left);
+   
+  }
+  else
+  {
+    temp=t;
+    if(t->left==NULL)
+     t=t->right;
+    else if(t->right==NULL)
+      t=t->left;
+    free(temp);
+   }
+  if(t==NULL)
+   return t;
+  t->height=1+max(Height(t->left),Height(t->right));
+  bal=getbalance(t);
+  if(bal>1&&getbalance(t->left)>=0)
+    {
+      return left(t);
+    }
+  if(bal>1&&getbalance(t->left)<0)
+    {
+      t->left=right(t->left);
+      return left(t);
+    }
+   if(bal<-1&&getbalance(t->right)<=0)
+    {
+      return right(t);
+    }
+    if(bal<-1&&getbalance(t->right)<0)
+    {
+      t->right=left(t->right);
+      return right(t);
+    }
+   return t;
+}
+int getbalance(treeptr t)
+{
+  if(t==NULL)
+    return 0;
+  else
+    return (Height(t->left)-Height(t->right));
+}
+treeptr right(treeptr k1)
+{
+  treeptr k2;
+  k2=k1->left;
+  k1->left=k2->right;
+  k2->right=k1;
+  k1->height=max(Height(k1->left),Height(k1>right))+1;
+  k2->height=max(Height(k2->left),Height(k2>right))+1;
+  return k2;
+}
+treeptr left(treeptr k1)
+{
+  treeptr k2;
+  k2=k1->right;
+  k1->right=k2->left;
+  k2->left=k1;
+  k1->height=max(Height(k1->left),Height(k1>right))+1;
+  k2->height=max(Height(k2->left),Height(k2>right))+1;
+  return k2;
+}
+
+
+void inordertravresal(treeptr t)
+{
+  if(t!=NULL)
+  {
+inordertravresal(t->left);
+    printf("%d\t",t->data);
+    inordertravresal(t->right);
+ }  
+}
+void preordertravresal(treeptr t)
+{
+  if(t!=NULL)
+  {
+    printf("%d\t",t->data);
+    preordertravresal(t->left);
+    preordertravresal(t->right);
+
+  }
+}
+void postordertravresal(treeptr t)
+{
+  if(t!=NULL)
+  {
+     postordertravresal(t->left);
+     postordertravresal(t->right);
+     printf("%d\t",t->data);
+   }
+}
+
+
+[18bit034@mepcolinux ex6]$cat appavl.c
+
+
+#include"tree.h"
+main()
+{
+ int k,che,ch,x,y,z,res;
+ treeptr t,temp,temp1,temp2;
+ while(1)
+ {
+  printf("\n\t1-Insert\n\t2-Delete\n\t3-Find\n\t4-Findmin\n\t5-Findmax\n\t6-Display\n\t7-Exit\n");
+  printf("\tEnter your Choice : ");
+  scanf("%d",&ch);
+  switch(ch)
+  {
+   case 1:
+	  printf("\n Enter the element to be inserted : ");
+	  scanf("%d",&x);
+	  t=insert(x,t);
+  	  break;
+  case 2:
+  	 printf("\nEnter the element to be deleted : ");
+  	 scanf("%d",&y);
+         t=Delete(y,t);
+         break;
+  case 3:
+	  printf("\n Enter the element to be searched : ");
+	  scanf("%d",&z);
+	  temp=find(z,t);
+	  if(temp!=NULL)
+	     printf("\n%d Element present \n",temp->data);
+	  else
+	    printf("\nElement Not Present\n");
+          break;
+  case 4:
+	  temp2=findmin(t);
+	  printf("\n The minimum element in the tree is %d",temp2->data);
+ 	  break;
+  case 5:
+ 	  temp2=findmax(t);
+	  printf("\n The maximum element in the tree is %d",temp2->data);
+           break;
+ case 6:
+	 printf("\n\t1-Inorder\n\t2-Preorder\n\t3-Postorder\n");
+	 printf("Enter your choice : ");
+ 	 scanf("%d",&che);
+	 if(che==1)
+	   inordertravresal(t);
+	 else if(che==2)
+	   preordertravresal(t);
+	 else if(che==3)
+	   postordertravresal(t);
+	 else
+	    exit(-1);
+         break;
+ case 8:
+         free(t);
+         exit(1);
+         break;
+ default:
+	   printf("\nWrong Choice\n");
+	   exit(-1);
+  }
+ }
+}
+[18bit034@mepcolinux ex6]$./a.out 
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 25
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 16
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 32
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 14
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 40
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 35
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 88
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 76
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 80
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 90
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 12
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 10
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 1
+
+ Enter the element to be inserted : 7
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 2
+
+Enter the element to be deleted : 16
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 6
+
+	1-Inorder
+	2-Preorder
+	3-Postorder
+Enter your choice : 1
+7	10	12	14	25	32	35	40	76	80	88	90	
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 2
+
+Enter the element to be deleted : 32
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 2
+
+Enter the element to be deleted : 90
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 2
+
+Enter the element to be deleted : 35
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 6
+
+	1-Inorder
+	2-Preorder
+	3-Postorder
+Enter your choice : 1
+7	10	12	14	25	40	76	80	88	
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 4
+
+ The minimum element in the tree is 7
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 5
+
+ The maximum element in the tree is 88
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 6
+
+	1-Inorder
+	2-Preorder
+	3-Postorder
+Enter your choice : 2
+25	14	12	10	7	40	88	76	80	
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 6
+
+	1-Inorder
+	2-Preorder
+	3-Postorder
+Enter your choice : 3
+7	10	12	14	80	76	88	40	25	
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 3
+
+ Enter the element to be searched : 15
+
+Element Not Present
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 3
+
+ Enter the element to be searched : 88
+
+88 Element present 
+
+	1-Insert
+	2-Delete
+	3-Find
+	4-Findmin
+	5-Findmax
+	6-Display
+	7-Exit
+	Enter your Choice : 7
+
+Wrong Choice
+[18bit034@mepcolinux ex6]$exit
+exit
+
+Script done on Thursday 12 September 2019 03:34:03 PM IST

@@ -1,0 +1,508 @@
+Script started on Thu 08 Aug 2019 08:06:16 AM IST
+[?1034h[18bit034@mepcolinux ex2]$cat nheadf.h
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+typedef struct student
+{
+ char name[20];
+ int rollno;
+ float cgpa;
+ struct student *next;
+}stud;
+ typedef stud *ptrtemp;
+typedef ptrtemp list;
+typedef ptrtemp position;
+typedef char elementname;
+void Insert(stud,position,list);
+void Delete(elementname[],list);
+position Find(elementname[],list);
+position Findprev(elementname[],list);
+void Printlist(list);
+int Islast(position,list);
+position Initialize();
+typedef struct pos
+{
+ int data;
+  struct pos *next;
+}pos1;
+  typedef pos1 *ptr;
+  typedef ptr poslist;
+  typedef ptr pos2;
+  typedef int elementtype;
+  void insert(elementtype,pos2,poslist);
+  void deletee(elementtype,poslist);
+  pos2 initialize();
+  pos2 find(elementtype,poslist);
+  void printpos(poslist,list);
+  void printlist(poslist);
+  pos2 findprev(elementtype,poslist);
+
+[18bit034@mepcolinux ex2]$cat impstudent.c
+#include "nheadf.h"
+
+position Find(elementname x[],list L)
+{
+ position p;
+ p=L->next;
+ while(p!=NULL)
+ {
+  if(strcmp(p->name,x)==0)
+     return p;
+  else
+     p=p->next;
+ }
+}
+
+position Findprev(elementname x[],list L)
+{
+ position p;
+ p=L->next;
+ while(p!=NULL)
+ {
+  if(strcmp(p->next->name,x)==0)
+     return p;
+  else
+     p=p->next;
+ }
+}
+
+void Insert(stud x,position p,list L)
+{
+ position temp;
+ temp=(stud*)malloc(sizeof(stud));
+ temp->rollno=x.rollno;
+ temp->cgpa=x.cgpa;
+ strcpy(temp->name,x.name);
+ temp->next=p->next;
+ p->next=temp;
+}
+
+void Delete(elementname x[],list L)
+{
+ position temp,prev,p;
+ p=Find(x,L);
+ if(p==L->next)
+ {
+  temp=p;
+  L->next=p->next;
+  free (temp);
+ }
+ else
+ {
+ prev=Findprev(x,L);
+ temp=prev->next;
+ prev->next=temp->next;
+ free (temp);
+ }
+}
+
+position Initialize()
+{
+ position temp;
+ temp=(stud*)malloc(sizeof(stud));
+ if(temp==NULL)
+ {
+  printf("No memory space \n");
+  exit(-1);
+ }
+ else
+ {
+  strcpy(temp->name,"head");
+  temp->rollno=0;
+  temp->cgpa=0;
+  temp->next=NULL;
+ }
+  return temp;
+}
+
+int Islast(position p,list L)
+{
+ stud s;
+ printf("Enter name");
+ scanf("%s",s.name);
+ while(p->next==NULL)
+ {
+  if(strcmp(p->name,s.name)==0)
+     return 1;
+ }
+ return 0;
+}
+
+void Printlist(list L)
+{
+ position p;
+ p=L->next;
+ while(p!=NULL)
+ {
+  printf("\n\nNAME:%s",p->name);
+  printf("\nROLLNO:%d",p->rollno);
+  printf("\nCGPA:%f",p->cgpa);
+  p=p->next;
+ }
+}
+
+void insert(elementtype x,pos2 p,poslist L)
+{
+ pos2 temp;
+ temp=(pos1*)malloc(sizeof(pos1));
+ temp->data=x;
+ temp->next=p->next;
+ p->next=temp;
+}
+
+void deletee(elementtype x,poslist L)
+{
+ pos2 prev,temp,p;
+ p=find(x,L);
+ if(p==L->next)
+ {
+  temp=p;
+  L->next=p->next;
+  free (temp);
+ }
+ else
+ {
+ prev=findprev(x,L);
+ temp=prev->next;
+ prev->next=temp->next;
+ free(temp);
+ }
+}
+
+pos2 find(elementtype x,poslist L)
+{
+ pos2 p;
+ p=L->next;
+ while(p!=NULL)
+ {
+  if(p->data==x)
+     return p;
+  else
+     p=p->next;
+ }
+}
+
+pos2 initialize()
+{
+ pos2 p;
+ p=(pos1*)malloc(sizeof(pos1));
+ if(p==NULL)
+ {
+  printf("NO memory space");
+  exit(-1);
+ }
+ else
+ {
+  p->data=0;
+  p->next=NULL;
+ }
+ return p;
+}
+
+void printpos(poslist pl,list L)
+{
+ pos2 p1;
+                      position p;
+ int c=0;
+ p=L->next;
+ while(p!=NULL)
+ {
+  c++;
+  p1=pl->next;
+  while(p1!=NULL)
+  {
+   if(p1->data==c)
+   {
+    printf("\n\nNAME:%s",p->name);
+    printf("\nROLLNO:%d",p->rollno);
+    printf("\nCGPA:%f",p->cgpa);
+    break;
+   }
+   else
+     p1=p1->next;
+  }
+  p=p->next;
+ }
+}
+
+void printlist(poslist L)
+{
+ pos2 p;
+ p=L->next;
+ while(p!=NULL)
+ {
+  printf("\n%d",p->data);
+  p=p->next;
+ }
+}
+
+pos2 findprev(elementtype x,poslist L)
+{
+ pos2 p;
+ p=L->next;
+ while(p!=NULL)
+ {
+  if(p->next->data==x)
+     return p;
+  else
+p=p->next;
+ }
+}
+
+         
+[18bit034@mepcolinux ex2]$cat appstudent.c
+#include "nheadf.h"
+main()
+{
+ stud temp;
+ list L1;
+ poslist pl;
+ L1=Initialize();
+ pl=initialize();
+ position p=L1;
+ pos2 p1=pl;
+ int x,ch,val,c=0,c1=0;
+ char stuname[20];
+ do
+ {
+  printf("\n\nEnter choice");
+  printf("\nStudent List\n1.Insert\n2.Delete\n3.Printlist\n4.Insert\n5.Delete\n6.Printlist\n7.Printposition\n");
+  scanf("%d",&ch);
+  switch(ch)
+  {
+   case 1:printf("Enter student to insert");
+          scanf("%s%d%f",temp.name,&temp.rollno,&temp.cgpa);
+          if(c!=0)
+          {
+          printf("Enter after which name");
+          scanf("%s",stuname);
+          p=Find(stuname,L1);
+          }
+          c++;
+          Insert(temp,p,L1);
+          break;
+   case 2:printf("Enter name to delete");
+          scanf("%s",stuname);
+          Delete(stuname,L1);
+          break;
+   case 3:Printlist(L1);
+          break;
+   case 4:printf("Enter value to insert");
+          scanf("%d",&val);
+          if(c1!=0)
+          {
+          printf("Enter after which value");
+          scanf("%d",&x);
+          p1=find(x,pl);
+ }
+          c1++;
+          insert(val,p1,pl);
+          break;
+   case 5:printf("Enter value to delete");
+          scanf("%d",&val);
+          deletee(val,pl);
+          break;
+   case 7:printpos(pl,L1);
+          break;
+   case 6:printlist(pl);
+          break;
+  }
+ }while(1);
+}
+
+[18bit034@mepcolinux ex2]$cc -c impstudent.c
+[18bit034@mepcolinux ex2]$ca[Kc appstudent.c impstudent.o
+[18bit034@mepcolinux ex2]$./a.out
+
+
+Enter choice
+Student List
+1.Insert
+2.Delete
+3.Printlist
+4.Insert
+5.Delete
+6.Printlist
+7.Printposition
+1
+Enter student to insertlal
+12
+9.00
+
+
+Enter choice
+Student List
+1.Insert
+2.Delete
+3.Printlist
+4.Insert
+5.Delete
+6.Printlist
+7.Printposition
+1
+Enter student to insertaumrudh 
+8.8     13 8.8
+Enter after which namelal
+
+
+Enter choice
+Student List
+1.Insert
+2.Delete
+3.Printlist
+4.Insert
+5.Delete
+6.Printlist
+7.Printposition
+1
+Enter student to insertsunjai
+50
+7.8
+Enter after which namelal
+
+
+Enter choice
+Student List
+1.Insert
+2.Delete
+3.Printlist
+4.Insert
+5.Delete
+6.Printlist
+7.Printposition
+3
+
+
+NAME:lal
+ROLLNO:12
+CGPA:9.000000
+
+NAME:sunjai
+ROLLNO:50
+CGPA:7.800000
+
+NAME:aumrudh
+ROLLNO:13
+CGPA:8.800000
+
+Enter choice
+Student List
+1.Insert
+2.Delete
+3.Printlist
+4.Insert
+5.Delete
+6.Printlist
+7.Printposition
+2
+Enter name to deleteaumrudh
+
+
+Enter choice
+Student List
+1.Insert
+2.Delete
+3.Printlist
+4.Insert
+5.Delete
+6.Printlist
+7.Printposition
+3
+
+
+NAME:lal
+ROLLNO:12
+CGPA:9.000000
+
+NAME:sunjai
+ROLLNO:50
+CGPA:7.800000
+
+Enter choice
+Student List
+1.Insert
+2.Delete
+3.Printlist
+4.Insert
+5.Delete
+6.Printlist
+7.Printposition
+4
+Enter value to insert1
+
+
+Enter choice
+Student List
+1.Insert
+2.Delete
+3.Printlist
+4.Insert
+5.Delete
+6.Printlist
+7.Printposition
+4
+Enter value to insert2
+Enter after which value1
+
+
+Enter choice
+Student List
+1.Insert
+2.Delete
+3.Printlist
+4.Insert
+5.Delete
+6.Printlist
+7.Printposition
+6
+
+1
+2
+
+Enter choice
+Student List
+1.Insert
+2.Delete
+3.Printlist
+4.Insert
+5.Delete
+6.Printlist
+7.Printposition
+7
+
+
+NAME:lal
+ROLLNO:12
+CGPA:9.000000
+
+NAME:sunjai
+ROLLNO:50
+CGPA:7.800000
+
+Enter choice
+Student List
+1.Insert
+2.Delete
+3.Printlist
+4.Insert
+5.Delete
+6.Printlist
+7.Printposition
+8
+
+
+Enter choice
+Student List
+1.Insert
+2.Delete
+3.Printlist
+4.Insert
+5.Delete
+6.Printlist
+7.Printposition
+^C
+[18bit034@mepcolinux ex2]$exit
+exit
+
+Script done on Thu 08 Aug 2019 08:09:22 AM IST
